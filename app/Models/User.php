@@ -75,11 +75,35 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Category::class);
     }
 
-    public function setting(){
-        return $this->hasOne(Setting::class);   
+    public function setting()
+    {
+        return $this->hasOne(Setting::class);
     }
 
-    public function contacts(){
-        return $this->hasMany(Contact::class);   
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class);
+    }
+
+    public function watchedMovies()
+    {
+        return $this->morphedByMany(Movie::class, 'watchable', 'watch_histories')->withPivot('watch_date')
+        ->withTimestamps();
+    }
+
+    public function watchedSeries()
+    {
+        return $this->morphedByMany(Serie::class, 'watchable', 'watch_histories')->withPivot('watch_date')
+        ->withTimestamps();
+    }
+
+    public function watchedLaterMovies()
+    {
+        return $this->morphedByMany(Movie::class, 'watchable', 'watch_laters');
+    }
+
+    public function watchedLaterSeries()
+    {
+        return $this->morphedByMany(Serie::class, 'watchable', 'watch_laters');
     }
 }

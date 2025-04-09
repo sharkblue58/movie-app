@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cast', function (Blueprint $table) {
+        Schema::create('watch_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('movie_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('serie_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('actor_id')->constrained()->onDelete('cascade');
-            $table->string('character_name')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->morphs('watchable');
+            $table->date('watch_date');
+            $table->unique(['user_id', 'watchable_id', 'watchable_type']);
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cast');
+        Schema::dropIfExists('watch_histories');
     }
 };

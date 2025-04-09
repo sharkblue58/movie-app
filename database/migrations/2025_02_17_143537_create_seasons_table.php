@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer('season_number');
             $table->date('release_date');
             $table->text('description');
+            $table->float('rating');
+            $table->string('poster_url')->nullable();
             $table->timestamps();
         });
     }

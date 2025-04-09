@@ -19,7 +19,7 @@ return new class extends Migration
             $table->float('rating');
             $table->integer('duration');
             $table->string('poster_url')->nullable();
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('country_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

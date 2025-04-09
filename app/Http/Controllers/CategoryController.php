@@ -54,7 +54,7 @@ class CategoryController extends Controller
      *     )
      * )
      */
-    public function getAllCategories(Request$request)
+    public function getAllCategories(Request $request)
     {
         $validated = $request->validate([
             'limit' => 'integer|min:1|max:100'

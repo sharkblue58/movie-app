@@ -8,11 +8,11 @@ class Actor extends Model
 {
     public function movies()
     {
-        return $this->belongsToMany(Movie::class, 'cast');
+        return $this->morphedByMany(Movie::class, 'castable');
     }
-
+    
     public function series()
     {
-        return $this->belongsToMany(Serie::class, 'cast');
+        return $this->morphedByMany(Serie::class, 'castable');
     }
 }

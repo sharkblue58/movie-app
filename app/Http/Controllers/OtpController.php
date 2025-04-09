@@ -116,6 +116,7 @@ class OtpController extends Controller
  *             required={"email", "password"},
  *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
  *             @OA\Property(property="password", type="string", format="password", example="newpassword123")
+ *             @OA\Property(property="password_confirmation", type="string", format="password", example="newpassword123")
  *         )
  *     ),
  *     @OA\Response(
@@ -137,14 +138,17 @@ class OtpController extends Controller
 
     public function resetPassword(PasswordResetRequest $request)
     {
+        $validated = $request->validate([
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
 
-
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $validated['email'])->first();
 
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-        $user->update(['password' => $request->password]);
+        $user->update(['password' => $validated['password']]);
 
         return response()->json(['message' => 'Password reset successfully']);
     }

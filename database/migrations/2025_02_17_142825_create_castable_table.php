@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('movie_serie_category', function (Blueprint $table) {
+        Schema::create('castable', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('serie_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('movie_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('actor_id')->constrained()->onDelete('cascade');
+            $table->morphs('castable');
+            $table->string('character_name')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('movie_serie_category');
+        Schema::dropIfExists('cast');
     }
 };

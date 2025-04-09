@@ -6,12 +6,22 @@ use App\Models\Movie;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreMovieRequest;
 use App\Http\Requests\UpdateMovieRequest;
+use App\Traits\HasImageUpload;
 
 class MovieController extends Controller
 {
+    use HasImageUpload;
     public function store(StoreMovieRequest $request)
     {
-        $movie = Movie::create($request->validated());
+        $validatedData = $request->validated();
+        
+        if ($request->hasFile('poster_url')) {
+            $validatedData['poster_url'] = $this->storeImage($request->file('poster_url'), 'movies');
+        }
+        
+        $movie = Movie::create($validatedData);
+        $movie->categories()->sync($request->category_ids);
+        
         return response()->json($movie, 201);
     }
 

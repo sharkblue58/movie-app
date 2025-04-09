@@ -32,11 +32,11 @@ class Category extends Model
 
     public function movies()
     {
-        return $this->belongsToMany(Movie::class,'movie_serie_category');
+        return $this->morphedByMany(Movie::class, 'categoryable');
     }
 
     public function series()
     {
-        return $this->belongsToMany(Serie::class,'movie_serie_category');
+        return $this->morphedByMany(Serie::class, 'categoryable');
     }
 }
