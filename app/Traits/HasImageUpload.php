@@ -30,7 +30,6 @@ trait HasImageUpload
         }
         $image->move(base_path('public/' . $type), $fileName);
         $img->toJpeg(75)->save(base_path($basePath));
-        logger($basePath);
         return (string) $basePath ;
     }
 
