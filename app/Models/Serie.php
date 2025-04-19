@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Serie extends Model
 {
-
+    use HasFactory ;
     protected $fillable = [
-        'title', 'release_date', 'description', 'rating', 'duration', 'poster_url','country_id'
+        'title', 'release_date', 'description', 'rating', 'duration', 'poster_url','country_id','studio_id'
     ];
     public function categories()
     {
@@ -38,4 +40,18 @@ class Serie extends Model
     {
         return $this->morphedByMany(User::class, 'watchable', 'watch_laters');
     }
+
+    public function studio(){
+        return $this->belongsTo(Studio::class);
+    }
+
+    public function getCreatedAtAttribute($value)
+{
+    return Carbon::parse($value)->format('Y-m-d H:i:s');
+}
+
+public function getUpdatedAtAttribute($value)
+{
+    return Carbon::parse($value)->format('Y-m-d H:i:s');
+}
 }

@@ -4,16 +4,82 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\User;
+use App\Models\SocialEmail;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Requests\SocialLoginRequest;
-use App\Models\SocialEmail;
+use Illuminate\Support\Facades\Validator;
 
 class SocialEmailController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/v1/auth/social-login",
+     *     summary="Login using social providers like Google, Facebook, Twitter",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"access_token", "provider"},
+     *             @OA\Property(property="access_token", type="string", example="ya29.a0AfH6SM..."),
+     *             @OA\Property(property="provider", type="string", enum={"twitter", "google", "facebook"}, example="google")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful login",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="access_token", type="string", example="eyJ0eXAiOiJKV..."),
+     *             @OA\Property(property="refresh_token", type="string", example="eyJhbGciOiJI..."),
+     *             @OA\Property(
+     *                 property="user",
+     *                 type="object",
+     *                 example={
+     *                     "id": 1,
+     *                     "name": "John Doe",
+     *                     "email": "john@example.com"
+     *                 }
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Validation error"),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 example={
+     *                     "provider": {"The selected provider is invalid."}
+     *                 }
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Error from provider or authentication failure",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Invalid credentials from provider.")
+     *         )
+     *     )
+     * )
+     */
+
     public function socialLogin(SocialLoginRequest $request)
     {
+        $validator = Validator::make($request->all(), [
+            'access_token' => 'required|string',
+            'provider' => 'required|string|in:twitter,google,facebook',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
         try {
             $providerAccessToken = $request->get('access_token');

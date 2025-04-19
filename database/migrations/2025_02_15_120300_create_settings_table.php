@@ -16,8 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->boolean('is_light_mode');
             $table->boolean('is_full_screen');
-            $table->string('is_notifiable');
+            $table->boolean('is_notifiable');
             $table->timestamps();
+            $table->unique('user_id');
         });
     }
 

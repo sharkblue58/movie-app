@@ -5,11 +5,10 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Country extends Model
+class Studio extends Model
 {
     protected $fillable = [
         'name',
-        'code',
     ];
 
     public function movies()
@@ -17,18 +16,18 @@ class Country extends Model
         return $this->hasMany(Movie::class);
     }
 
-    public function series ()
+    public function series()
     {
         return $this->hasMany(Serie::class);
     }
 
     public function getCreatedAtAttribute($value)
-{
-    return Carbon::parse($value)->format('Y-m-d H:i:s');
-}
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
 
-public function getUpdatedAtAttribute($value)
-{
-    return Carbon::parse($value)->format('Y-m-d H:i:s');
-}
+    public function getUpdatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
 }

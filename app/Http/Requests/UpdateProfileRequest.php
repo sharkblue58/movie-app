@@ -27,6 +27,7 @@ class UpdateProfileRequest extends FormRequest
             'gender'=> 'required|in:male,female',
             'birth_date' => 'required|date',
             'address' => 'required|string|max:255',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,webp|max:2048',
         ];
     }
 }

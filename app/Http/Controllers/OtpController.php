@@ -21,31 +21,31 @@ class OtpController extends Controller
 {
 
     /**
- * @OA\Post(
- *     path="/v1/auth/send-otp",
- *     tags={"OTP"},
- *     summary="Send OTP to user email",
- *     description="Generates a 6-digit OTP and sends it to the provided email address.",
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             required={"email"},
- *             @OA\Property(property="email", type="string", format="email", example="user@example.com")
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="OTP sent successfully",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="OTP sent successfully")
- *         )
- *     ),
- *     @OA\Response(
- *         response=422,
- *         description="Validation error"
- *     )
- * )
- */
+     * @OA\Post(
+     *     path="/v1/auth/send-otp",
+     *     tags={"OTP"},
+     *     summary="Send OTP to user email",
+     *     description="Generates a 6-digit OTP and sends it to the provided email address.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email"},
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OTP sent successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="OTP sent successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     )
+     * )
+     */
 
     public function sendOtp(Request $request)
     {
@@ -61,35 +61,35 @@ class OtpController extends Controller
     }
 
     /**
- * @OA\Post(
- *     path="/v1/auth/verify-otp",
- *     tags={"OTP"},
- *     summary="Verify OTP",
- *     description="Verifies the OTP entered by the user.",
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             required={"email", "otp"},
- *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
- *             @OA\Property(property="otp", type="integer", example=123456)
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="OTP verified successfully",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="OTP verified successfully")
- *         )
- *     ),
- *     @OA\Response(
- *         response=401,
- *         description="Invalid OTP",
- *         @OA\JsonContent(
- *             @OA\Property(property="error", type="string", example="Invalid OTP")
- *         )
- *     )
- * )
- */
+     * @OA\Post(
+     *     path="/v1/auth/verify-otp",
+     *     tags={"OTP"},
+     *     summary="Verify OTP",
+     *     description="Verifies the OTP entered by the user.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email", "otp"},
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+     *             @OA\Property(property="otp", type="integer", example=123456)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="OTP verified successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="OTP verified successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Invalid OTP",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Invalid OTP")
+     *         )
+     *     )
+     * )
+     */
 
     public function verifyOTP(OTPRequest $request)
     {
@@ -104,37 +104,44 @@ class OtpController extends Controller
 
         return response()->json(['error' => 'Invalid OTP'], 401);
     }
-/**
- * @OA\Post(
- *     path="/v1/auth/reset-password",
- *     tags={"OTP"},
- *     summary="Reset Password",
- *     description="Resets the user's password after OTP verification.",
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             required={"email", "password"},
- *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
- *             @OA\Property(property="password", type="string", format="password", example="newpassword123")
- *             @OA\Property(property="password_confirmation", type="string", format="password", example="newpassword123")
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Password reset successfully",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Password reset successfully")
- *         )
- *     ),
- *     @OA\Response(
- *         response=404,
- *         description="User not found",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="User not found")
- *         )
- *     )
- * )
- */
+    /**
+     * @OA\Post(
+     *     path="/v1/auth/reset-password",
+     *     tags={"OTP"},
+     *     summary="Reset Password",
+     *     description="Resets the user's password after OTP verification.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="newpassword123"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="newpassword123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Password reset successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Password reset successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Validation error")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="User not found")
+     *         )
+     *     )
+     * )
+     */
 
     public function resetPassword(PasswordResetRequest $request)
     {

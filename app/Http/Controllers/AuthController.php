@@ -238,7 +238,7 @@ class AuthController extends Controller
      * @OA\Get(
      *     path="/v1/auth/me",
      *     tags={"Authentication"},
-     *     summary="Get authenticated user",
+     *     summary="Get current authenticated user",
      *     description="Returns details of the currently authenticated user.",
      *     security={{"bearerAuth":{}}},
      *     @OA\Response(

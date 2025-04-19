@@ -30,6 +30,7 @@ class StoreMovieRequest extends FormRequest
             'poster_url' => 'nullable|image|mimes:jpeg,png,webp|max:2048',
             'category_ids' => 'required|array|exists:categories,id',
             'country_id' => 'required|exists:countries,id',
+            'studio_id' => 'required|exists:studios,id',
         ];
     }
 }

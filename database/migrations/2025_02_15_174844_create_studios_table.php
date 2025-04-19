@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('social_emails', function (Blueprint $table) {
+        Schema::create('studios', function (Blueprint $table) {
             $table->id();
-            $table->enum('provider',['google', 'facebook', 'twitter'])->nullable();
-            $table->string('provider_id')->nullable();
-            $table->string('avatar')->nullable();
-            $table->foreignId('user_id')->constrained();
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('social_emails');
+        Schema::dropIfExists('studios');
     }
 };

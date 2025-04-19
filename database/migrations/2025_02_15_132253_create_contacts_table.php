@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('subject');
             $table->text('message');
-            $table->enum('status', ['read', 'unread']);
-            $table->enum('type', ['support', 'problem']);
+            $table->enum('status', ['read', 'unread'])->default('unread');
+            $table->enum('type', ['help', 'report']);
             $table->string('attachment')->nullable();
             $table->timestamps();
         });

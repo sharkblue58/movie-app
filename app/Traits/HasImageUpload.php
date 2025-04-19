@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 
+use InvalidArgumentException;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
@@ -13,24 +14,32 @@ use Intervention\Image\Drivers\Gd\Driver;
 trait HasImageUpload
 {
 
-    public function storeImage(UploadedFile $image, string $type = 'movies'):string
+    public function storeImage(UploadedFile $image, string $type = 'movies'): string
     {
-       
-        if (!in_array($type, ['movies', 'series'])) {
-            return false;
+
+        $validTypes = ['movies', 'series', 'users','attachments'];
+        if (!in_array($type, $validTypes)) {
+            throw new InvalidArgumentException('Invalid image type. Allowed types are: ' . implode(', ', $validTypes));
         }
 
-        $fileName = uniqid() . '.' . $image->getClientOriginalExtension();
+        $fileName =uniqid('img_', true)  . '.' . $image->getClientOriginalExtension();
+
+        // Resize or compress using Intervention Image (optional)
         $manager = new ImageManager(new Driver());
         $img = $manager->read($image);
-        $basePath = 'public/' . $type . '/' . $fileName ;
-        $directoryPath = base_path('public/' . $type);
+
+        $imagePath = $type . '/' . $fileName;
+
+        $directoryPath = storage_path('app/public/' . $type);
         if (!file_exists($directoryPath)) {
-            mkdir($directoryPath, 0777, true); 
+            mkdir($directoryPath, 0775, true);  
         }
-        $image->move(base_path('public/' . $type), $fileName);
-        $img->toJpeg(75)->save(base_path($basePath));
-        return (string) $basePath ;
+        
+        // Save optimized image to storage/app/public/{type}
+        $absolutePath = storage_path('app/public/' . $imagePath);
+        $img->toJpeg(75)->save($absolutePath);
+
+        return 'storage/' . $imagePath;
     }
 
     /**
@@ -41,9 +50,11 @@ trait HasImageUpload
      */
     public function deleteImage(string $imagePath): void
     {
-        // Check if the image exists and delete it from the public disk
-        if (Storage::disk('public')->exists($imagePath)) {
-            Storage::disk('public')->delete($imagePath);
+
+        $pathInStorage = str_replace('storage/', '', $imagePath);
+
+        if (Storage::disk('public')->exists($pathInStorage)) {
+            Storage::disk('public')->delete($pathInStorage);
         }
     }
 }

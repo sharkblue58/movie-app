@@ -16,7 +16,8 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         $arrayOfPermissions = [
           'show current user',
-          'edit settings'  
+          'edit settings',
+          'edit contacts'  
         ];
 
         $permissions = collect($arrayOfPermissions)->map(function ($permission) {

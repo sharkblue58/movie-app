@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Season extends Model
@@ -15,4 +16,14 @@ class Season extends Model
     {
         return $this->hasMany(Episode::class);
     }
+
+    public function getCreatedAtAttribute($value)
+{
+    return Carbon::parse($value)->format('Y-m-d H:i:s');
+}
+
+public function getUpdatedAtAttribute($value)
+{
+    return Carbon::parse($value)->format('Y-m-d H:i:s');
+}
 }

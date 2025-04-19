@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use Carbon\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -23,6 +24,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'name',
+        'profile_image',
         'email',
         'password',
         'phone',
@@ -106,4 +108,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->morphedByMany(Serie::class, 'watchable', 'watch_laters');
     }
+
+    public function getCreatedAtAttribute($value)
+{
+    return Carbon::parse($value)->format('Y-m-d H:i:s');
+}
+
+public function getUpdatedAtAttribute($value)
+{
+    return Carbon::parse($value)->format('Y-m-d H:i:s');
+}
 }

@@ -243,7 +243,7 @@
                 "tags": [
                     "Authentication"
                 ],
-                "summary": "Get authenticated user",
+                "summary": "Get current authenticated user",
                 "description": "Returns details of the currently authenticated user.",
                 "operationId": "c94c7caafd6deae721997a66e5af45b7",
                 "responses": {
@@ -356,6 +356,394 @@
                                         },
                                         "errors": {
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/auth/categories/personalize": {
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Personalize categories for the authenticated user",
+                "description": "This endpoint allows the authenticated user to personalize their preferred categories by providing a list of category IDs.",
+                "operationId": "userCategoriesPersonalize",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "category_ids"
+                                ],
+                                "properties": {
+                                    "category_ids": {
+                                        "description": "Array of category IDs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Categories personalized successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Categories personalized successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "category_ids": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The selected category_ids.0 is invalid."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/auth/contacts": {
+            "post": {
+                "tags": [
+                    "Contacts"
+                ],
+                "summary": "Create a new contact (help or report) by authenticated user",
+                "description": "Allows the authenticated user to submit a help or report contact message with optional image attachment.",
+                "operationId": "storeContact",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "subject",
+                                    "message",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "subject": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Login Issue"
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "example": "I can't log into my account."
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "help",
+                                            "report"
+                                        ],
+                                        "example": "help"
+                                    },
+                                    "attachment": {
+                                        "description": "Optional image attachment (jpeg, png, jpg, gif, svg)",
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Contact submitted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contact submitted successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "user_id": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "subject": {
+                                                    "type": "string",
+                                                    "example": "Login Issue"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "I can't log into my account."
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "example": "help or report"
+                                                },
+                                                "attachment": {
+                                                    "type": "string",
+                                                    "example": "storage/attachments/img_1234.jpg"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2025-04-17 12:34:56"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2025-04-17 12:34:56"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "subject": [
+                                                    "The subject field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/auth/contacts/{id}/status": {
+            "patch": {
+                "tags": [
+                    "Contacts"
+                ],
+                "summary": "Update the status of a contact",
+                "description": "Allows authorized users to update the status of a contact to 'read' or 'unread'. Requires the 'edit contacts' permission.",
+                "operationId": "updateContactStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the contact to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "read",
+                                            "unread"
+                                        ],
+                                        "example": "read"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Contact status updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contact status updated successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "user_id": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "subject": {
+                                                    "type": "string",
+                                                    "example": "Login Issue"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "I can't log into my account."
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "example": "help"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "read"
+                                                },
+                                                "attachment": {
+                                                    "type": "string",
+                                                    "example": "storage/attachments/img_1234.jpg"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2025-04-17 12:34:56"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2025-04-17 12:45:00"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "status": [
+                                                    "The status field is required."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Contact not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No query results for model [App\\\\Models\\\\Contact] 1"
                                         }
                                     },
                                     "type": "object"
@@ -518,6 +906,11 @@
                                         "type": "string",
                                         "format": "password",
                                         "example": "newpassword123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newpassword123"
                                     }
                                 },
                                 "type": "object"
@@ -542,6 +935,22 @@
                             }
                         }
                     },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
                     "404": {
                         "description": "User not found",
                         "content": {
@@ -559,6 +968,619 @@
                         }
                     }
                 }
+            }
+        },
+        "/v1/auth/settings/user": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Get current user's settings",
+                "description": "Fetch the settings of the currently authenticated user.",
+                "operationId": "658209aa8a64fa3990ff182b4c007647",
+                "responses": {
+                    "200": {
+                        "description": "Successfully fetched the user's settings",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "Setting ID",
+                                            "type": "integer"
+                                        },
+                                        "user_id": {
+                                            "description": "User ID associated with the setting",
+                                            "type": "integer"
+                                        },
+                                        "is_light_mode": {
+                                            "description": "Indicates if light mode is enabled",
+                                            "type": "boolean"
+                                        },
+                                        "is_full_screen": {
+                                            "description": "Indicates if full-screen mode is enabled",
+                                            "type": "boolean"
+                                        },
+                                        "is_notifiable": {
+                                            "description": "Notification preference (e.g., 'yes', 'no')",
+                                            "type": "string"
+                                        },
+                                        "created_at": {
+                                            "description": "Creation timestamp",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "description": "Last update timestamp",
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing token"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/auth/settings/toggle/{key}": {
+            "patch": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Toggle user setting",
+                "description": "Toggles a specified user setting (like light mode, fullscreen, notifications). If the setting does not exist, it returns an error.",
+                "operationId": "toggleSetting",
+                "parameters": [
+                    {
+                        "name": "key",
+                        "in": "path",
+                        "description": "The key of the setting to toggle (e.g., 'is_light_mode', 'is_full_screen', 'is_notifiable')",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Setting toggled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "is_light_mode toggled successfully."
+                                        },
+                                        "setting": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "user_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "is_light_mode": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "is_full_screen": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "is_notifiable": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-04-17T10:00:00Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-04-17T10:10:00Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid setting key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Invalid setting key."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/auth/social-login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login using social providers like Google, Facebook, Twitter",
+                "operationId": "f068bcb5d1a8e876ba3842e2b3e26ce8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "access_token",
+                                    "provider"
+                                ],
+                                "properties": {
+                                    "access_token": {
+                                        "type": "string",
+                                        "example": "ya29.a0AfH6SM..."
+                                    },
+                                    "provider": {
+                                        "type": "string",
+                                        "enum": [
+                                            "twitter",
+                                            "google",
+                                            "facebook"
+                                        ],
+                                        "example": "google"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV..."
+                                        },
+                                        "refresh_token": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJI..."
+                                        },
+                                        "user": {
+                                            "type": "object",
+                                            "example": {
+                                                "id": 1,
+                                                "name": "John Doe",
+                                                "email": "john@example.com"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "provider": [
+                                                    "The selected provider is invalid."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error from provider or authentication failure",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid credentials from provider."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/users/categories": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get categories personalized by the authenticated user",
+                "description": "Returns a list of categories liked by the authenticated user.",
+                "operationId": "userLikedCategories",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Category"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/forget-password": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Change the authenticated user's password",
+                "description": "Allows an authenticated user to change their password by providing the current and new password.",
+                "operationId": "forgetPassword",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "current_password",
+                                    "new_password",
+                                    "new_password_confirmation"
+                                ],
+                                "properties": {
+                                    "current_password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "minLength": 8,
+                                        "example": "oldpassword123"
+                                    },
+                                    "new_password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "minLength": 8,
+                                        "example": "newpassword123"
+                                    },
+                                    "new_password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newpassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Password changed successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Password changed successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found or current password is incorrect.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/auth/profile": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get authenticated user profile",
+                "operationId": "c06c81af0e3eac7ad68c59cfcd830db8",
+                "responses": {
+                    "200": {
+                        "description": "Successful response with user profile",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 4
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "profile_image": {
+                                            "type": "string",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "john@example.com"
+                                        },
+                                        "birth_date": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "gender": {
+                                            "type": "string",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "phone": {
+                                            "type": "string",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "address": {
+                                            "type": "string",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "email_verified_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-04-16T17:03:21.000000Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-04-16T17:03:21.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update authenticated user's profile",
+                "description": "Updates the profile of the currently authenticated user, including optional image upload.",
+                "operationId": "updateUserProfile",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "phone",
+                                    "gender",
+                                    "birth_date",
+                                    "address"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "Ahmed Mohamed"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "+20123456789"
+                                    },
+                                    "gender": {
+                                        "type": "string",
+                                        "enum": [
+                                            "male",
+                                            "female"
+                                        ],
+                                        "example": "male"
+                                    },
+                                    "birth_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1995-05-15"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "123 Tahrir Street, Cairo"
+                                    },
+                                    "profile_image": {
+                                        "description": "Optional profile image (jpeg, png, webp max: 2MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Profile updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile updated successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                },
+                                                "property": null
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         }
     },
@@ -608,12 +1630,24 @@
             "description": "Endpoints for user authentication and JWT token management."
         },
         {
+            "name": "Categories",
+            "description": "Endpoints for category management."
+        },
+        {
+            "name": "Contacts",
+            "description": "Endpoints for contact management."
+        },
+        {
             "name": "OTP",
             "description": "Endpoints for OTP verification , password reset and forgot password."
         },
         {
-            "name": "Categories",
-            "description": "Categories"
+            "name": "Settings",
+            "description": "Endpoints for user settings."
+        },
+        {
+            "name": "User",
+            "description": "Endpoints for user management."
         }
     ]
 }
